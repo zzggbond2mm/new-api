@@ -100,6 +100,11 @@ func validateMultipartTaskRequest(c *gin.Context, info *RelayInfo, action string
 		}
 	}
 
+	if refs := formData["input_reference"]; len(refs) > 0 {
+		req.InputReference = refs[0]
+		req.Images = append(req.Images, refs...)
+	}
+
 	if images := formData["images"]; len(images) > 0 {
 		req.Images = images
 	}
@@ -137,7 +142,7 @@ func ValidateMultipartDirect(c *gin.Context, info *RelayInfo) *dto.TaskError {
 	if seconds == 0 {
 		seconds = req.Duration
 	}
-	if req.InputReference != "" {
+	if len(req.Images) == 0 && req.InputReference != "" {
 		req.Images = []string{req.InputReference}
 	}
 

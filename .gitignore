@@ -27,3 +27,8 @@ data/
 .gomodcache/
 .gocache-temp
 .gopath
+
+# AIadd local sensitive configs
+env_AIadd/.env.dev
+env_AIadd/.env.prod
+env_AIadd/mysql_init_AIadd.sql

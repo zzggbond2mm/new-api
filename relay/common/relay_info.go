@@ -636,7 +636,8 @@ func (t *TaskSubmitReq) HasImage() bool {
 func (t *TaskSubmitReq) UnmarshalJSON(data []byte) error {
 	type Alias TaskSubmitReq
 	aux := &struct {
-		Metadata json.RawMessage `json:"metadata,omitempty"`
+		Metadata       json.RawMessage `json:"metadata,omitempty"`
+		InputReference json.RawMessage `json:"input_reference,omitempty"`
 		*Alias
 	}{
 		Alias: (*Alias)(t),
@@ -644,6 +645,19 @@ func (t *TaskSubmitReq) UnmarshalJSON(data []byte) error {
 
 	if err := common.Unmarshal(data, &aux); err != nil {
 		return err
+	}
+
+	if len(aux.InputReference) > 0 {
+		var singleRef string
+		if err := common.Unmarshal(aux.InputReference, &singleRef); err == nil {
+			t.InputReference = singleRef
+		} else {
+			var multiRef []string
+			if err := common.Unmarshal(aux.InputReference, &multiRef); err == nil && len(multiRef) > 0 {
+				t.InputReference = multiRef[0]
+				t.Images = append(t.Images, multiRef...)
+			}
+		}
 	}
 
 	if len(aux.Metadata) > 0 {

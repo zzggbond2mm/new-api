@@ -1,0 +1,16 @@
+[Unit]
+Description=New API Dev Service
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/srv/new-api/dev/current
+EnvironmentFile=/srv/new-api/dev/current/.env.dev
+ExecStart=/srv/new-api/dev/current/new-api-dev --log-dir /srv/new-api/dev/current/logs --port 3001
+Restart=always
+RestartSec=5
+LimitNOFILE=65535
+
+[Install]
+WantedBy=multi-user.target
